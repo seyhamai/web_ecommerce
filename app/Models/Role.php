@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use App\Traits\HasShortId;
 
 class Role extends Model
 {
-    use HasUlids;
+    use HasShortId;
 
     protected $fillable = [
         'name',
@@ -17,15 +17,6 @@ class Role extends Model
         'id',
     ];
 
-    public function uniqueIds(): array
-    {
-        return ['public_id'];
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'public_id';
-    }
 
     public function users()
     {

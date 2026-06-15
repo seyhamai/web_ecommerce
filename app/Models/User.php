@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
+// REMOVE THIS: use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Role;
+use App\Traits\HasShortId; // 1. Import your new trait
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUlids, SoftDeletes;
+    // 2. Swap HasUlids for HasShortId
+    use HasFactory, Notifiable, HasShortId, SoftDeletes;
 
     protected $fillable = [
         'full_name',
@@ -35,16 +37,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function uniqueIds(): array
-    {
-        return ['public_id'];
-    }
-
-    public function getRouteKeyName(): string
-    {
-        return 'public_id';
-    }
-
+    // 3. DELETE the uniqueIds() method! You don't need it anymore.
 
     public function role()
     {

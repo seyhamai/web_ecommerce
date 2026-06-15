@@ -10,15 +10,15 @@ return new class extends Migration
     {
 
         Schema::create('roles', function (Blueprint $table) {
-            $table->id(); 
-            $table->ulid('public_id')->unique();
+            $table->id();
+            $table->string('public_id', 8)->unique();
             $table->string('name');
             $table->timestamps();
         });
 
         Schema::create('users', function (Blueprint $table) {
             $table->id(); // Fast internal integer ID
-            $table->ulid('public_id')->unique();
+            $table->string('public_id', 8)->unique();
 
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
 
@@ -29,9 +29,9 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            
 
-            $table->softDeletes(); 
+
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -41,7 +41,7 @@ return new class extends Migration
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary(); 
+            $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();

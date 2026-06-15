@@ -48,7 +48,7 @@ class AuthController extends Controller
             if (Auth::user()->role->name === 'Admin') {
                 return redirect()->route('admin.dashboard');
             }
-            
+
             return redirect()->route('store.index');
         }
 
@@ -77,7 +77,7 @@ class AuthController extends Controller
         ]);
 
         // Find the exact ID for the 'Customer' role dynamically
-       $customerRole = Role::query()->where('name', 'Customer')->first();
+        $customerRole = Role::query()->where('name', 'Customer')->first();
 
         // Safety fallback in case the database hasn't been seeded yet
         if (!$customerRole) {
@@ -91,7 +91,7 @@ class AuthController extends Controller
             'phone'     => $request->phone,
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
-            'role_id'   => $customerRole->id, 
+            'role_id'   => $customerRole->id,
         ]);
 
         Auth::login($user);
@@ -128,7 +128,7 @@ class AuthController extends Controller
     /**
      * Show the final Reset Password form (after they click the email link).
      */
-    public function showReset(Request $request,string $token)
+    public function showReset(Request $request, string $token)
     {
         return view('auth.reset-password', [
             'token' => $token,
@@ -157,15 +157,16 @@ class AuthController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
-                // Fire an event (good practice) and log the user in instantly
+                // Fire an event (good practice)
                 event(new PasswordReset($user));
-                Auth::login($user);
+
+                // REMOVED Auth::login($user); from here!
             }
         );
 
         // If successful, redirect to the store. If failed, send them back with an error.
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('store.index')->with('success', 'Your password has been reset!');
+            return redirect()->route('login')->with('success', 'Your password has been reset! Please log in with your new password.');
         }
 
         return back()->withErrors(['email' => __($status)]);

@@ -46,11 +46,15 @@
                                             Enter your email address and we will send you a link to reset your password.
                                         </div>
 
-                                        @if (session('status'))
-                                            <div class="alert alert-success" role="alert">
-                                                {{ session('status') }}
-                                            </div>
-                                        @endif
+                                       @if (session('status'))
+    <div class="alert alert-success mx-0 d-flex justify-content-between align-items-center" role="alert">
+        <div>
+            <i class="fas fa-check-circle me-1"></i>
+            {{ session('status') }}
+        </div>
+        <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success">Return to Login</a>
+    </div>
+@endif
                                         
                                         <<form method="POST" action="{{ route('password.email') }}">
                                             @csrf 
