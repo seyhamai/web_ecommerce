@@ -47,17 +47,25 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
 
-        // Main Admin Dashboard Overview
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');
+
+        Route::get('/users', [UserController::class, 'index'])->name('users');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user:public_id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user:public_id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user:public_id}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/users/export', [UserController::class, 'exportUsers'])->name('users.export');
+        Route::patch('/users/{public_id}/restore', [UserController::class, 'restore'])->name('users.restore');
+        Route::delete('/users/{public_id}/force-delete', [UserController::class, 'forceDelete'])->name('users.forceDelete');
+
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\CategoryController::class, 'store'])->name('store');
+            Route::put('/{category}', [\App\Http\Controllers\CategoryController::class, 'update'])->name('update');
+            Route::delete('/{category}', [\App\Http\Controllers\CategoryController::class, 'destroy'])->name('destroy');
+        });
     });
-    // manage users
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
-    Route::get('/admin/users/{user:public_id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/admin/users/{user:public_id}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{user:public_id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-    Route::get('/admin/users/export', [UserController::class, 'exportUsers'])->name('exportUsers');
 });

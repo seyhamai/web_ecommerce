@@ -36,7 +36,7 @@
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
-                        <div class="nav">
+                        <div class="nav py-1 gap-0">
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="#">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -45,6 +45,10 @@
                             <a class="nav-link" href="{{ route('admin.users') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Manage Users
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.categories.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Category
                             </a>
                             </div>
                     </div>

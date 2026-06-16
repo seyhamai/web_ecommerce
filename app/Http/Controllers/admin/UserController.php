@@ -26,8 +26,8 @@ class UserController extends Controller
             });
         }
 
-        if ($request->filled('role_id')) {
-            $query->where('role_id', $request->role_id);
+        if ($request->filled('public_id')) {
+            $query->where('public_id', $request->public_id);
         }
 
         return $query;
@@ -117,5 +117,35 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users')->with('success', 'User deleted successfully!');
+    }
+    // 1. Show the Disabled Users Page
+    public function disabledUsers()
+    {
+        // Grab only the soft-deleted users
+        $users = User::onlyTrashed()->with('role')->latest()->paginate(10);
+
+        // We will create this new view in Step 3
+        return view('admin.users.disabled', compact('users'));
+    }
+
+    // 2. Restore the User
+    public function restore($public_id)
+    {
+        // Notice we MUST use onlyTrashed() to find them, because standard queries hide them!
+        $user = User::onlyTrashed()->where('public_id', $public_id)->firstOrFail();
+
+        $user->restore(); // This clears the 'deleted_at' timestamp
+
+        return back()->with('success', 'User has been successfully restored.');
+    }
+
+    // 3. Permanently Delete the User
+    public function forceDelete($public_id)
+    {
+        $user = User::onlyTrashed()->where('public_id', $public_id)->firstOrFail();
+
+        $user->forceDelete(); // This wipes them from the database forever
+
+        return back()->with('success', 'User has been permanently deleted.');
     }
 }
