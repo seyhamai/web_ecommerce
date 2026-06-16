@@ -20,9 +20,9 @@ class UserController extends Controller
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
-                // Fixed to 'full_name' to match your working index method
                 $q->where('full_name', 'LIKE', "%{$searchTerm}%")
-                    ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+                    ->orWhere('email', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('public_id', 'LIKE', "%{$searchTerm}%");
             });
         }
 
