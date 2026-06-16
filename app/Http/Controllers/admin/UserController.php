@@ -35,11 +35,13 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        // Call the helper function and chain your sorting/pagination
         $users = $this->applyUserFilters($request)->latest()->get();
+        $disabledUsers = User::onlyTrashed()->with('role')->latest()->get();
+
+
         $roles = Role::all();
 
-        return view('admin.users.index', compact('users', 'roles'));
+        return view('admin.users.index', compact('users', 'roles', 'disabledUsers'));
     }
 
     public function exportUsers(Request $request) // Added missing Request parameter!
