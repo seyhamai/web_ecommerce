@@ -12,9 +12,9 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::query()->with('parent')->latest()->get();
-        $parentCategories = Category::query()->whereNull('parent_id')->get();
+        $allCategories = Category::query()->with('parent')->get()->sortBy('name');
 
-        return view('admin.categories.index', compact('categories', 'parentCategories'));
+        return view('admin.categories.index', compact('categories', 'allCategories'));
     }
 
     public function store(Request $request)
