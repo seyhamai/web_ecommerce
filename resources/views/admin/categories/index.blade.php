@@ -93,10 +93,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Parent Category</label>
-                        <select name="parent_id" class="form-select">
+                        <select name="parent_id" id="editParentId" class="form-select">
                             <option value="">None (Top Level)</option>
-                            @foreach($parentCategories as $parent)
-                                <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                            @foreach($allCategories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->full_path }}</option>
                             @endforeach
                         </select>
                     </div>
