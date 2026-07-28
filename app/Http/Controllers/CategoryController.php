@@ -9,12 +9,24 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::query()->with('parent')->latest()->get();
-        $parentCategories = Category::query()->whereNull('parent_id')->get();
+        $currentParentId = $request->query('parent_id');
+        $currentCategory = null;
 
-        return view('admin.categories.index', compact('categories', 'parentCategories'));
+        $query = Category::query()->with('parent')->withCount('children');
+
+        if ($currentParentId) {
+            $query->where('parent_id', $currentParentId);
+            $currentCategory = Category::query()->find($currentParentId);
+        } else {
+            $query->whereNull('parent_id');
+        }
+
+        $categories = $query->latest()->get();
+        $allCategories = Category::query()->with('parent')->get()->sortBy('name');
+
+        return view('admin.categories.index', compact('categories', 'allCategories', 'currentCategory'));
     }
 
     public function store(Request $request)
@@ -34,7 +46,7 @@ class CategoryController extends Controller
         $slug = Str::slug($request->name);
 
         if ($request->filled('parent_id')) {
-            $parent = Category::find($request->parent_id);
+            $parent = Category::query()->find($request->parent_id);
             $slug = $parent->slug . '-' . $slug;
         }
 
@@ -65,7 +77,7 @@ class CategoryController extends Controller
         $slug = Str::slug($request->name);
 
         if ($request->filled('parent_id')) {
-            $parent = Category::find($request->parent_id);
+            $parent = Category::query()->find($request->parent_id);
             $slug = $parent->slug . '-' . $slug;
         }
 
@@ -81,6 +93,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        /** @var \Illuminate\Database\Eloquent\Model $category */
         $category->delete();
         return back()->with('success', 'Category deleted successfully.');
     }
