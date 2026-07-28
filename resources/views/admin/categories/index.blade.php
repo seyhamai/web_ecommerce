@@ -116,6 +116,7 @@
                         <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="mb-3">
+<<<<<<< HEAD
                         <label class="form-label fw-semibold">Parent Category</label>
                         <select name="parent_id" class="form-select">
                             <option value="">Root Level (Main Category)</option>
@@ -123,6 +124,13 @@
                                 <option value="{{ $cat->id }}" {{ ($currentCategory && $currentCategory->id == $cat->id) ? 'selected' : '' }}>
                                     {{ $cat->name }}
                                 </option>
+=======
+                        <label class="form-label">Parent Category</label>
+                        <select name="parent_id" id="editParentId" class="form-select">
+                            <option value="">None (Top Level)</option>
+                            @foreach($allCategories as $cat)
+                                <option value="{{ $cat->id }}">{{ $cat->full_path }}</option>
+>>>>>>> 47dac3c2178e23f28799d231d6ede35fe6549420
                             @endforeach
                         </select>
                     </div>
