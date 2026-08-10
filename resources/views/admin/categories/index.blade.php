@@ -1,20 +1,18 @@
 @extends('layouts.admin')
 
 @section('content')
-
 <div class="container-fluid px-1 px-md-2">
     <h1 class="mt-4 font-semibold fs-2">Manage Categories</h1>
-    
- @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mt-5 mt-md-2 shadow-sm" role="alert" style="position: relative; z-index: 10;">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
+
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mt-5 mt-md-2 shadow-sm" role="alert" style="position: relative; z-index: 10;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <div class="card mb-4">
         <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 py-3">
-            
             <div class="fw-bold fs-5 d-flex align-items-center">
                 <i class="fas fa-tag text-warning me-2"></i>
                 @if($currentCategory)
@@ -40,67 +38,68 @@
 
         <div class="card-body p-0 m-0">
             <div class="table-responsive text-nowrap">
-    <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-            <tr>
-                <th class="ps-4">Category Name</th>
-                <th>URL Slug</th>
-                <th>Status</th>
-                <th class="text-end pe-4">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($categories as $category)
-            <tr>
-                <td class="ps-4">
-    <a href="{{ route('admin.categories.index', ['parent_id' => $category->id]) }}" class="text-decoration-none fw-bold text-dark fs-6">
-        <i class="fas fa-tag text-primary me-2"></i> {{ $category->name }}
-    </a>
-    @if($category->children_count > 0)
-        <span class="badge bg-light text-secondary border ms-2 d-none d-sm-inline">
-            {{ $category->children_count }} nested
-        </span>
-    @endif
-</td>
-                <td>{{ $category->slug }}</td>
-                <td>
-                    <span class="badge {{ $category->is_active ? 'bg-success' : 'bg-danger' }}">
-                        {{ $category->is_active ? 'Active' : 'Inactive' }}
-                    </span>
-                </td>
-                <td class="text-end pe-4">
-                    <button type="button" 
-                            class="btn btn-sm btn-primary" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#editCategoryModal"
-                            data-id="{{ $category->id }}"
-                            data-name="{{ $category->name }}"
-                            data-parent="{{ $category->parent_id }}"
-                            data-active="{{ $category->is_active }}">
-                        Edit
-                    </button>
-                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this category?')">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="4" class="text-center py-5 text-muted">
-                    <i class="fas fa-tag text-warning mb-2" style="font-size: 32px;"></i>
-                    <p class="mb-0 mt-2">No categories found in this field.</p>
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Category Name</th>
+                            <th>URL Slug</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($categories as $category)
+                            <tr>
+                                <td class="ps-4">
+                                    <a href="{{ route('admin.categories.index', ['parent_id' => $category->id]) }}" class="text-decoration-none fw-bold text-dark fs-6">
+                                        <i class="fas fa-tag text-primary me-2"></i> {{ $category->name }}
+                                    </a>
+                                    @if($category->children_count > 0)
+                                        <span class="badge bg-light text-secondary border ms-2 d-none d-sm-inline">
+                                            {{ $category->children_count }} nested
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>{{ $category->slug }}</td>
+                                <td>
+                                    <span class="badge {{ $category->is_active ? 'bg-success' : 'bg-danger' }}">
+                                        {{ $category->is_active ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button type="button" 
+                                            class="btn btn-sm btn-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editCategoryModal"
+                                            data-id="{{ $category->id }}"
+                                            data-name="{{ $category->name }}"
+                                            data-parent="{{ $category->parent_id }}"
+                                            data-active="{{ $category->is_active }}">
+                                        Edit
+                                    </button>
+                                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this category?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="fas fa-tag text-warning mb-2" style="font-size: 32px;"></i>
+                                    <p class="mb-0 mt-2">No categories found in this field.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Create Category Modal -->
 <div class="modal fade" id="createCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow">
@@ -116,7 +115,6 @@
                         <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="mb-3">
-<<<<<<< HEAD
                         <label class="form-label fw-semibold">Parent Category</label>
                         <select name="parent_id" class="form-select">
                             <option value="">Root Level (Main Category)</option>
@@ -124,13 +122,6 @@
                                 <option value="{{ $cat->id }}" {{ ($currentCategory && $currentCategory->id == $cat->id) ? 'selected' : '' }}>
                                     {{ $cat->name }}
                                 </option>
-=======
-                        <label class="form-label">Parent Category</label>
-                        <select name="parent_id" id="editParentId" class="form-select">
-                            <option value="">None (Top Level)</option>
-                            @foreach($allCategories as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->full_path }}</option>
->>>>>>> 47dac3c2178e23f28799d231d6ede35fe6549420
                             @endforeach
                         </select>
                     </div>
@@ -148,6 +139,7 @@
     </div>
 </div>
 
+<!-- Edit Category Modal -->
 <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow">
@@ -209,12 +201,9 @@
                 parentSelect.value = parentId ? parentId : '';
                 activeCheckbox.checked = isActive == '1';
                 
+                // Prevent selecting the category itself as its own parent
                 Array.from(parentSelect.options).forEach(function(option) {
-                    if (option.value === id) {
-                        option.disabled = true;
-                    } else {
-                        option.disabled = false;
-                    }
+                    option.disabled = (option.value === id);
                 });
             });
         }

@@ -30,7 +30,7 @@
             </div> 
 
             <div class="d-flex flex-column flex-sm-row gap-2">
-                <a href="{{ route('exportUsers', request()->query()) }}" class="btn btn-sm btn-outline-primary w-100 w-sm-auto text-center">
+                <a href="{{ route('admin.users.export', request()->query()) }}" class="btn btn-sm btn-outline-primary w-100 w-sm-auto text-center">
                     <i class="fas fa-file-csv"></i> Export File
                 </a>
                 <a href="{{ route('admin.users.create') }}" class="btn btn-sm btn-success w-100 w-sm-auto">

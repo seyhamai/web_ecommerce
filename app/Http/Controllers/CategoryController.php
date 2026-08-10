@@ -11,7 +11,6 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-<<<<<<< HEAD
         $currentParentId = $request->query('parent_id');
         $currentCategory = null;
 
@@ -28,12 +27,11 @@ class CategoryController extends Controller
         $allCategories = Category::query()->with('parent')->get()->sortBy('name');
 
         return view('admin.categories.index', compact('categories', 'allCategories', 'currentCategory'));
-=======
+
         $categories = Category::query()->with('parent')->latest()->get();
         $allCategories = Category::query()->with('parent')->get()->sortBy('name');
 
         return view('admin.categories.index', compact('categories', 'allCategories'));
->>>>>>> 47dac3c2178e23f28799d231d6ede35fe6549420
     }
 
     public function store(Request $request)
