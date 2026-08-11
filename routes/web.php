@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AttributeController;
 
 Route::get('/', function () {
 
@@ -74,6 +75,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{product}/edit', [\App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
             Route::put('/{product}', [\App\Http\Controllers\ProductController::class, 'update'])->name('update');
             Route::delete('/{product}', [\App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('attributes')->group(function () {
+            Route::get('/', [AttributeController::class, 'index'])->name('attributes.index');
+            Route::post('/colors', [AttributeController::class, 'storeColor'])->name('color.store');
+            Route::post('/sizes', [AttributeController::class, 'storeSize'])->name('size.store');
         });
     });
 });

@@ -54,6 +54,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Product Management
                             </a>
+                            <a class="nav-link" href="{{ route('admin.attributes.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Attributes
+                            </a>
                             </div>
                     </div>
                     <div class="sb-sidenav-footer">

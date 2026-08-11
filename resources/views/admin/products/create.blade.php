@@ -24,32 +24,7 @@
             <div class="col-lg-12">
                 @include('admin.products.product_created.basic_info')
                 @include('admin.products.product_created.selected_category')
-
-                {{-- <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="mb-0 fw-bold">Images & Media</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-4">
-                                <label class="form-label fw-semibold">Primary Image (Portrait)</label>
-                                <input type="file" name="primary_image" class="form-control" accept="image/*" required>
-                                <div class="form-text text-muted">Recommended size: 800x1200px. This is the main thumbnail on the storefront.</div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold">Secondary Image (Landscape) <span class="text-muted fw-normal">(Optional)</span></label>
-                                <input type="file" name="secondary_image" class="form-control" accept="image/*">
-                                <div class="form-text text-muted">Recommended size: 1200x800px. Used for hover effects or top banners.</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Gallery Detail Shots</label>
-                                <input type="file" name="gallery_images[]" class="form-control" accept="image/*" multiple>
-                                <div class="form-text text-muted">Hold CTRL (or CMD) to select multiple images at once.</div>
-                            </div>
-                    </div>
-                </div>
-
+                @include('admin.components._image_media')
                 <div class="card mb-4 shadow-sm border-0">
                     <div class="card-header bg-white py-3">
                         <h5 class="mb-0 fw-bold">Colors, Sizes & Variants</h5>
@@ -121,7 +96,7 @@
                             </table>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
 
             <!-- NEW CATEGORY COMPONENT -->
