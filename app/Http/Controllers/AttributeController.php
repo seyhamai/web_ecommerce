@@ -13,7 +13,7 @@ class AttributeController extends Controller
     {
         $colors = Color::orderBy('created_at', 'desc')->get();
         $sizes = Size::orderBy('created_at', 'desc')->get();
-
+        $sizes = Size::all()->sortByDesc('name', SORT_NATURAL | SORT_FLAG_CASE);
         return view('admin.attributes.index', compact('colors', 'sizes'));
     }
 

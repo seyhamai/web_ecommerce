@@ -14,8 +14,15 @@
         @endif
 
         <div class="form-check mb-0">
-            <input class="form-check-input" type="radio" name="category_id" id="cat-{{ $cat->id }}" value="{{ $cat->id }}">
-            <label class="form-check-label cursor-pointer text-secondary" for="cat-{{ $cat->id }}">
+            <!-- ADDED THE CHECKED LOGIC HERE -->
+            <input class="form-check-input @error('category_id') is-invalid @enderror" 
+                   type="radio" 
+                   name="category_id" 
+                   id="cat-{{ $cat->id }}" 
+                   value="{{ $cat->id }}"
+                   {{ (string) old('category_id', $product->category_id ?? '') === (string) $cat->id ? 'checked' : '' }}>
+                   
+            <label class="form-check-label cursor-pointer text-secondary" for="cat-{{ $cat->id }}" >
                 {{ $cat->name }}
             </label>
         </div>

@@ -46,7 +46,7 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 80px;">ID</th>
+                                    <th style="width: 80px;">No.</th>
                                     <th>Color Name</th>
                                     <th>Hex Code</th>
                                     <th>Preview</th>
@@ -56,14 +56,14 @@
                             <tbody>
                                 @forelse($colors as $color)
                                 <tr>
-                                    <td>{{ $color->id }}</td>
+                                    <!-- Changed this line to use loop iteration -->
+                                    <td>{{ $loop->iteration }}</td>
                                     <td class="fw-semibold">{{ $color->name }}</td>
                                     <td><code>{{ $color->hex_code }}</code></td>
                                     <td>
                                         <span class="d-inline-block rounded-circle shadow-sm border" style="width: 24px; height: 24px; background-color: {{ $color->hex_code }};"></span>
                                     </td>
                                     <td class="text-end">
-                                        <!-- Edit/Delete buttons (You can add routes later) -->
                                         <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
                                         <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
                                     </td>
@@ -75,7 +75,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                    </div>
+                    </div>  
                 </div>
 
                 <div class="tab-pane fade" id="sizes" role="tabpanel">
@@ -91,7 +91,7 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 80px;">ID</th>
+                                    <th style="width: 80px;">No.</th>
                                     <th>Size Name</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
@@ -99,7 +99,8 @@
                             <tbody>
                                 @forelse($sizes as $size)
                                 <tr>
-                                    <td>{{ $size->id }}</td>
+                                    <!-- This will now show 1, 2, 3... -->
+                                    <td>{{ $loop->iteration }}</td>
                                     <td class="fw-semibold">{{ $size->name }}</td>
                                     <td class="text-end">
                                         <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
@@ -121,11 +122,6 @@
     </div>
 </div>
 
-<!-- ========================== -->
-<!-- MODALS FOR ADDING DATA     -->
-<!-- ========================== -->
-
-<!-- Add Color Modal -->
 <div class="modal fade" id="addColorModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form action="{{ route('admin.color.store') }}" method="POST" class="modal-content border-0 shadow">
@@ -179,30 +175,6 @@
         </form>
     </div>
 </div>
-
-<script>
-    function selectPreset(hex, name) {
-        document.getElementById('hexTextInput').value = hex;
-        document.getElementById('visualPicker').value = hex;
-        const nameInput = document.getElementById('colorNameInput');
-        if(!nameInput.value) {
-            nameInput.value = name;
-        }
-    }
-</script>
-
-<script>
-    function selectPreset(hex, name) {
-        document.getElementById('hexTextInput').value = hex;
-        document.getElementById('visualPicker').value = hex;
-        // Optionally auto-fill the name if it's empty
-        const nameInput = document.getElementById('colorNameInput');
-        if(!nameInput.value) {
-            nameInput.value = name;
-        }
-    }
-</script>
-
 <!-- Add Size Modal -->
 <div class="modal fade" id="addSizeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -226,21 +198,5 @@
     </div>
 </div>
 
-<!-- Script to handle Tab color changes nicely -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const colorsTab = document.getElementById('colors-tab');
-        const sizesTab = document.getElementById('sizes-tab');
-
-        colorsTab.addEventListener('click', function() {
-            colorsTab.classList.replace('text-secondary', 'text-primary');
-            sizesTab.classList.replace('text-primary', 'text-secondary');
-        });
-
-        sizesTab.addEventListener('click', function() {
-            sizesTab.classList.replace('text-secondary', 'text-primary');
-            colorsTab.classList.replace('text-primary', 'text-secondary');
-        });
-    });
-</script>
+<script src="{{ asset('js/modules/attributeTabs.js') }}"></script>
 @endsection

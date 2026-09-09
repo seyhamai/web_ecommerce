@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
 
@@ -73,6 +74,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', [\App\Http\Controllers\ProductController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\ProductController::class, 'store'])->name('store');
             Route::get('/{product}/edit', [\App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
+            Route::put('/{id}/info', [\App\Http\Controllers\ProductController::class, 'updateInfo'])->name('updateInfo');
+            Route::put('/{id}/inventory', [\App\Http\Controllers\ProductController::class, 'updateInventory'])->name('updateInventory');
             Route::put('/{product}', [\App\Http\Controllers\ProductController::class, 'update'])->name('update');
             Route::delete('/{product}', [\App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
         });
