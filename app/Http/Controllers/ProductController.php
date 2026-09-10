@@ -10,6 +10,7 @@ use App\Models\Color;
 use App\Models\Size;
 use Illuminate\Http\Request;
 use App\Models\ProductVariant;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -41,7 +42,6 @@ class ProductController extends Controller
             'stock_quantity'   => 'required|numeric|min:0',
             'primary_image'    => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
 
-            // Notice: variants are entirely optional (nullable)
             'variants'               => 'nullable|array',
             'variants.*.sku'         => 'required|string',
             'variants.*.color_id'    => 'nullable|integer',
@@ -89,22 +89,20 @@ class ProductController extends Controller
                 'is_featured'      => $request->has('is_featured'),
             ]);
 
-            // 4. Handle Secondary Image
             if ($request->hasFile('secondary_image')) {
                 $file = $request->file('secondary_image');
                 $filename = time() . '_secondary_' . $file->getClientOriginalName();
                 $file->move(public_path('admin_assets/assets/img/products'), $filename);
 
                 $product->images()->create([
-                    'image_path' => 'admin_assets/assets/img/products/' . $filename,
-                    'type'       => 'secondary'
+                    'type'       => 'secondary_landscape',
+                    'image_path' => 'admin_assets/assets/img/products/' . $filename
                 ]);
             }
 
-            // 5. Handle Gallery Images
             if ($request->hasFile('gallery_images')) {
-                foreach ($request->file('gallery_images') as $index => $file) {
-                    $filename = time() . '_gallery_' . $index . '_' . $file->getClientOriginalName();
+                foreach ($request->file('gallery_images') as $file) {
+                    $filename = time() . '_gallery_' . uniqid() . '_' . $file->getClientOriginalName();
                     $file->move(public_path('admin_assets/assets/img/products'), $filename);
 
                     $product->images()->create([
@@ -164,9 +162,13 @@ class ProductController extends Controller
             DB::beginTransaction();
             $primaryImagePath = $product->primary_image;
             if ($request->hasFile('primary_image')) {
+                // DELETE OLD FILE FROM FOLDER
+                if ($primaryImagePath && File::exists(public_path($primaryImagePath))) {
+                    File::delete(public_path($primaryImagePath));
+                }
+
                 $file = $request->file('primary_image');
                 $filename = time() . '_primary_' . $file->getClientOriginalName();
-
                 $file->move(public_path('admin_assets/assets/img/products'), $filename);
                 $primaryImagePath = 'admin_assets/assets/img/products/' . $filename;
             }
@@ -183,6 +185,47 @@ class ProductController extends Controller
                 'is_active'        => $request->has('is_active'),
                 'is_featured'      => $request->has('is_featured'),
             ]);
+            if ($request->hasFile('secondary_image')) {
+
+                $oldSecondary = $product->images()->where('type', 'secondary_landscape')->first();
+                if ($oldSecondary && File::exists(public_path($oldSecondary->image_path))) {
+                    File::delete(public_path($oldSecondary->image_path));
+                }
+
+                $file = $request->file('secondary_image');
+                $filename = time() . '_secondary_' . $file->getClientOriginalName();
+                $file->move(public_path('admin_assets/assets/img/products'), $filename);
+
+                $product->images()->updateOrCreate(
+                    ['type' => 'secondary_landscape'],
+                    ['image_path' => 'admin_assets/assets/img/products/' . $filename]
+                );
+            }
+            if ($request->hasFile('gallery_images')) {
+                // GET ALL OLD GALLERY IMAGES
+                $oldGalleryImages = $product->images()->where('type', 'gallery')->get();
+
+                // DELETE PHYSICAL FILES FROM FOLDER
+                foreach ($oldGalleryImages as $oldImage) {
+                    if (File::exists(public_path($oldImage->image_path))) {
+                        File::delete(public_path($oldImage->image_path));
+                    }
+                }
+
+                // DELETE ROWS FROM DATABASE
+                $product->images()->where('type', 'gallery')->delete();
+
+                // UPLOAD AND SAVE THE NEW ONES
+                foreach ($request->file('gallery_images') as $file) {
+                    $filename = time() . '_gallery_' . uniqid() . '_' . $file->getClientOriginalName();
+                    $file->move(public_path('admin_assets/assets/img/products'), $filename);
+
+                    $product->images()->create([
+                        'image_path' => 'admin_assets/assets/img/products/' . $filename,
+                        'type'       => 'gallery'
+                    ]);
+                }
+            }
 
             DB::commit();
             return back()->with('success', 'Product information updated successfully!');
