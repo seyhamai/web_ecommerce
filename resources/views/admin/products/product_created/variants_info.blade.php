@@ -76,57 +76,37 @@
                     </tr>
                 </thead>
                 <tbody id="variantsBody">
-                    
-                    @php
-                        // Determine whether to loop through validation errors (old) or database variants (edit)
-                        $variantsToDisplay = old('variants', (isset($product) ? $product->variants->toArray() : []));
-                    @endphp
-
-                    @if(!empty($variantsToDisplay) && count($variantsToDisplay) > 0)
-                        @foreach($variantsToDisplay as $index => $variant)
+                    @if(isset($product) && $product->variants->count() > 0)
+                        <!-- LOOP EXISTING VARIANTS -->
+                        @foreach($product->variants as $index => $variant)
                             <tr>
-                                <td class="align-middle fw-semibold text-dark">
-                                    <span class="badge bg-secondary">Variant</span>
+                                <td class="fw-semibold align-middle">
+                                    {{ $variant->color->name ?? '' }} {{ $variant->color && $variant->size ? '/' : '' }} {{ $variant->size->name ?? '' }}
                                     
-                                    <!-- Hidden inputs to preserve IDs -->
-                                    @if(!empty($variant['color_id']))
-                                        <input type="hidden" name="variants[{{ $index }}][color_id]" value="{{ $variant['color_id'] }}">
-                                    @endif
-                                    @if(!empty($variant['size_id']))
-                                        <input type="hidden" name="variants[{{ $index }}][size_id]" value="{{ $variant['size_id'] }}">
-                                    @endif
+                                    <!-- Critical: Pass the Variant ID so the Controller knows to UPDATE, not create -->
+                                    <input type="hidden" name="variants[{{ $index }}][id]" value="{{ $variant->id }}">
+                                    <input type="hidden" name="variants[{{ $index }}][color_id]" value="{{ $variant->color_id }}">
+                                    <input type="hidden" name="variants[{{ $index }}][size_id]" value="{{ $variant->size_id }}">
                                 </td>
-                                <td>
-                                    <input type="text" class="form-control form-control-sm @error("variants.$index.sku") is-invalid @enderror" name="variants[{{ $index }}][sku]" value="{{ $variant['sku'] ?? '' }}" required>
+                                <td class="align-middle">
+                                    <input type="text" class="form-control form-control-sm" name="variants[{{ $index }}][sku]" value="{{ $variant->sku }}" required>
                                 </td>
-                                <td>
-                                    @php
-                                        // Handle price offset mapping if loaded from database vs old request
-                                        $priceOffset = isset($variant['price_offset']) ? $variant['price_offset'] : (isset($variant['price']) && isset($product) ? $variant['price'] - $product->price : 0);
-                                    @endphp
-                                    <input type="number" step="0.01" class="form-control form-control-sm" name="variants[{{ $index }}][price_offset]" value="{{ $priceOffset }}">
+                                <td class="align-middle">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">$</span>
+                                        <!-- Calculate the price offset on the fly -->
+                                        <input type="number" step="0.01" class="form-control" name="variants[{{ $index }}][price_offset]" value="{{ $variant->price - $product->price }}" placeholder="0.00">
+                                    </div>
                                 </td>
-                                <td>
-                                    @php
-                                        $stockVal = $variant['stock'] ?? ($variant['stock_quantity'] ?? 0);
-                                    @endphp
-                                    <input type="number" class="form-control form-control-sm @error("variants.$index.stock") is-invalid @enderror" name="variants[{{ $index }}][stock]" value="{{ $stockVal }}" min="0" required>
+                                <td class="align-middle">
+                                    <input type="number" class="form-control form-control-sm variant-stock-input" name="variants[{{ $index }}][stock]" value="{{ $variant->stock_quantity }}" min="0" required>
                                 </td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn" onclick="this.closest('tr').remove()"><i class="fas fa-times"></i></button>
+                                <td class="text-center align-middle">
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn" title="Remove Variant"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                         @endforeach
-                    
-                    @else
-                        <tr id="noVariantsRow">
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="fas fa-layer-group fs-3 mb-2 text-light"></i>
-                                <p class="mb-0">Select colors and sizes above, then click <strong>Generate Rows</strong> to set your inventory.</p>
-                            </td>
-                        </tr>
                     @endif
-                    
                 </tbody>
             </table>
         </div>

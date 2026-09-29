@@ -1,0 +1,58 @@
+/* 1. Dashboard Background & General Text */
+body {
+    background-color: #f4f6f9; /* Soft gray background so white elements stand out */
+    color: #212529; /* Soft black/charcoal text for readability */
+}
+
+/* 2. Primary Buttons (Your exact style + subtle shadow) */
+.btn-primary {
+    background-color: #ffffff !important;
+    border-color: #e9ecef !important;
+    color: #000000 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important; /* Prevents the white button from turning invisible on white cards */
+}
+
+/* Button Hover State */
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #f8f9fa !important; /* Turns very light gray when hovered */
+    border-color: #f8f9fa !important;
+    color: #212529 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12) !important; /* Shadow slightly increases on hover */
+}
+
+/* 3. Primary Backgrounds (Like card headers or top navigation) */
+.bg-primary {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-bottom: 1px solid #e9ecef !important; /* Adds a clean line to separate white headers from white bodies */
+}
+
+/* 4. Primary Text Links */
+.text-primary {
+    color: #212529 !important;
+    font-weight: 600; /* Makes dark links stand out a bit more */
+}
+
+/* 5. Clean, minimalist cards */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef; /* Very light gray border */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); /* Extremely soft shadow */
+}
+.form-check-input.custom-switch:checked {
+    background-color: #000 !important;
+    border-color: #000 !important;
+}
+.btn-blue {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+.btn-blue:hover,
+.btn-blue:focus {
+    background-color: #0b5ed7 !important;
+    border-color: #0a58ca !important;
+    color: #ffffff !important;
+}

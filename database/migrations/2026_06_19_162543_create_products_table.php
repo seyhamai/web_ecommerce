@@ -27,7 +27,6 @@ return new class extends Migration
             $table->decimal('compare_at_price', 10, 2)->nullable();
 
             $table->integer('stock_quantity')->default(0);
-            $table->string('primary_image')->nullable();
 
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);

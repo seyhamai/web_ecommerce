@@ -1,60 +1,112 @@
-// 1. Make selectPreset global so the HTML onclick="" buttons can use it
 window.selectPreset = function (hex, name) {
-    document.getElementById("hexTextInput").value = hex;
-    document.getElementById("visualPicker").value = hex;
+    const hexInput = document.getElementById("addHexInput");
+    const visualPicker = document.getElementById("addVisualPicker");
 
-    // Auto-fill the name if it's empty
-    const nameInput = document.getElementById("colorNameInput");
-    if (!nameInput.value) {
+    // REMOVED THE SPACE: Changed '#a ddColorModal' to '#addColorModal'
+    const nameInput = document.querySelector(
+        '#addColorModal input[name="color_name"]',
+    );
+
+    if (hexInput) {
+        hexInput.value = hex;
+    }
+    if (visualPicker) {
+        visualPicker.value = hex;
+    }
+    if (nameInput) {
         nameInput.value = name;
+        nameInput.dispatchEvent(new Event("input", { bubbles: true }));
+        nameInput.dispatchEvent(new Event("change", { bubbles: true }));
     }
 };
 
-// 2. Wait for the page to load before handling tabs
-document.addEventListener("DOMContentLoaded", function () {
-    const tabsContainer = document.getElementById("attributeTabs");
-    if (!tabsContainer) return; // Exit if not on the attributes page
+// ==========================================
+// PAGE LOAD
+// ==========================================
 
-    // --- A. TAB MEMORY LOGIC ---
+document.addEventListener("DOMContentLoaded", function () {
+    // ------------------------------------------
+    // A. AUTO-REOPEN MODAL WHEN VALIDATION ERROR
+    // ------------------------------------------
+
+    const errorModalEl = document.querySelector(".has-validation-error");
+
+    if (errorModalEl && typeof bootstrap !== "undefined") {
+        const errorModal = new bootstrap.Modal(errorModalEl);
+        errorModal.show();
+
+        // Remember which Attribute tab should be active
+        if (errorModalEl.id === "addSizeModal") {
+            localStorage.setItem("activeAttributeTab", "sizes-tab");
+        } else {
+            localStorage.setItem("activeAttributeTab", "colors-tab");
+        }
+    }
+
+    // ------------------------------------------
+    // B. ATTRIBUTE TAB MEMORY
+    // ------------------------------------------
+
+    const tabsContainer = document.getElementById("attributeTabs");
+
+    if (!tabsContainer) {
+        return;
+    }
+
     const triggerTabList = document.querySelectorAll("#attributeTabs button");
-    triggerTabList.forEach((triggerEl) => {
+
+    triggerTabList.forEach(function (triggerEl) {
         triggerEl.addEventListener("click", function () {
             localStorage.setItem("activeAttributeTab", this.id);
         });
     });
 
+    // Restore previous tab
     const activeTabId = localStorage.getItem("activeAttributeTab");
-    if (activeTabId) {
+
+    if (activeTabId && typeof bootstrap !== "undefined") {
         const tabElement = document.getElementById(activeTabId);
-        if (tabElement && typeof bootstrap !== "undefined") {
+
+        if (tabElement) {
             const tab = new bootstrap.Tab(tabElement);
+
             tab.show();
         }
     }
 
-    // --- B. TAB TEXT COLOR LOGIC ---
+    // ------------------------------------------
+    // C. TAB TEXT COLOR
+    // ------------------------------------------
+
     const colorsTab = document.getElementById("colors-tab");
+
     const sizesTab = document.getElementById("sizes-tab");
 
-    if (colorsTab && sizesTab) {
-        // Function to handle switching text colors
-        function updateTabStyles(activeId) {
-            if (activeId === "colors-tab") {
-                colorsTab.classList.replace("text-secondary", "text-primary");
-                sizesTab.classList.replace("text-primary", "text-secondary");
-            } else {
-                sizesTab.classList.replace("text-secondary", "text-primary");
-                colorsTab.classList.replace("text-primary", "text-secondary");
-            }
-        }
-
-        // Apply colors immediately when page loads based on the remembered tab
-        updateTabStyles(activeTabId || "colors-tab");
-
-        // Listen for clicks to change colors live
-        colorsTab.addEventListener("click", () =>
-            updateTabStyles("colors-tab"),
-        );
-        sizesTab.addEventListener("click", () => updateTabStyles("sizes-tab"));
+    if (!colorsTab || !sizesTab) {
+        return;
     }
+
+    function updateTabStyles(activeId) {
+        if (activeId === "colors-tab") {
+            colorsTab.classList.replace("text-secondary", "text-primary");
+
+            sizesTab.classList.replace("text-primary", "text-secondary");
+        } else {
+            sizesTab.classList.replace("text-secondary", "text-primary");
+
+            colorsTab.classList.replace("text-primary", "text-secondary");
+        }
+    }
+
+    // Set initial tab color
+    updateTabStyles(activeTabId || "colors-tab");
+
+    // Update when clicking tabs
+    colorsTab.addEventListener("click", function () {
+        updateTabStyles("colors-tab");
+    });
+
+    sizesTab.addEventListener("click", function () {
+        updateTabStyles("sizes-tab");
+    });
 });

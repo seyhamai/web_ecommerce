@@ -2,53 +2,50 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Add New User</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ route('admin.users') }}">Users</a></li>
-        <li class="breadcrumb-item active">Create</li>
-    </ol>
-    @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show mx-0" role="alert">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-    <div class="card mb-4">
-        <div class="card-body">
+    
+    <!-- Replaced raw HTML headers with your Page Header Component -->
+    <x-page-header
+        title="Add New User"
+        breadcrumb="Users"
+        breadcrumb-url="{{ route('admin.users') }}"
+    />
+
+    <!-- Global alerts (if any) -->
+    <x-_alerts />
+
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body p-4">
             <form action="{{ route('admin.users.store') }}" method="POST">
                 @csrf
                 
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" name="full_name" class="form-control" value="{{ old('full_name') }}" required>
-                </div>
+                <!-- 1. Text Input Component -->
+                <x-input name="full_name" label="Full Name" required />
 
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" required>
-                </div>
+                <!-- 2. Email Input Component -->
+                <x-input type="email" name="email" label="Email" autocomplete="new-off" required />
 
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required>
-                </div>
+                <!-- 3. Password Input Component -->
+                <x-input type="password" name="password" label="Password" autocomplete="new-password" required />
 
-                <div class="mb-3">
-                    <label class="form-label">User Type</label>
-                    <select name="role_id" class="form-select" required>
-                        <option value="" disabled selected>Select a role...</option>
-                        @foreach($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <!-- 4. Select Dropdown Component -->
+                <x-select name="role_id" label="User Type" required>
+                    <option value="" disabled selected>Select a role...</option>
+                    @foreach($roles as $role)
+                        <!-- Added old() check so it remembers their choice if validation fails -->
+                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                            {{ $role->name }}
+                        </option>
+                    @endforeach
+                </x-select>
 
-                <button type="submit" class="btn btn-success">Create User</button>
-                <a href="{{ route('admin.users') }}" class="btn btn-secondary">Cancel</a>
+                <div class="mt-4 pt-2 border-top">
+                    <x-button type="submit" color="success" size="md">
+                        Create User
+                    </x-button>
+                    <x-button href="{{ route('admin.users') }}" color="secondary" size="md" class="w-90">
+                        Cancel
+                    </x-button>
+                </div>
             </form>
         </div>
     </div>

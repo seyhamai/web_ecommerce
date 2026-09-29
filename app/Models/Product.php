@@ -19,7 +19,6 @@ class Product extends Model
         'price',
         'compare_at_price',
         'stock_quantity',
-        'primary_image',
         'is_active',
         'is_featured'
     ];
@@ -28,7 +27,6 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
     public function images()
     {
         return $this->hasMany(ProductImage::class);
@@ -36,5 +34,10 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+    public function getPrimaryImageAttribute()
+    {
+        $primary = $this->images->where('type', 'primary_portrait')->first();
+        return $primary ? $primary->image_path : null;
     }
 }

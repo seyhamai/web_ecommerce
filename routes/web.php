@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SliderController;
 
 Route::get('/', function () {
 
@@ -72,18 +73,38 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('products')->name('products.')->group(function () {
             Route::get('/', [\App\Http\Controllers\ProductController::class, 'index'])->name('index');
             Route::get('/create', [\App\Http\Controllers\ProductController::class, 'create'])->name('create');
+            Route::get('/trash', [\App\Http\Controllers\ProductController::class, 'trash'])->name('trash');
+            Route::put('/{product}', [\App\Http\Controllers\ProductController::class, 'update'])->name('update');
             Route::post('/', [\App\Http\Controllers\ProductController::class, 'store'])->name('store');
             Route::get('/{product}/edit', [\App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
             Route::put('/{id}/info', [\App\Http\Controllers\ProductController::class, 'updateInfo'])->name('updateInfo');
             Route::put('/{id}/inventory', [\App\Http\Controllers\ProductController::class, 'updateInventory'])->name('updateInventory');
-            Route::put('/{product}', [\App\Http\Controllers\ProductController::class, 'update'])->name('update');
             Route::delete('/{product}', [\App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/restore', [\App\Http\Controllers\ProductController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [\App\Http\Controllers\ProductController::class, 'forceDelete'])->name('forceDelete');
         });
 
         Route::prefix('attributes')->group(function () {
             Route::get('/', [AttributeController::class, 'index'])->name('attributes.index');
+
             Route::post('/colors', [AttributeController::class, 'storeColor'])->name('color.store');
+            Route::put('/colors/{id}', [AttributeController::class, 'updateColor'])->name('color.update');
+            Route::delete('/colors/{id}', [AttributeController::class, 'destroyColor'])->name('color.destroy');
+
             Route::post('/sizes', [AttributeController::class, 'storeSize'])->name('size.store');
+            Route::put('/sizes/{id}', [AttributeController::class, 'updateSize'])->name('size.update');
+            Route::delete('/sizes/{id}', [AttributeController::class, 'destroySize'])->name('size.destroy');
+        });
+        Route::prefix('sliders')->name('sliders.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\SliderController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\SliderController::class, 'create'])->name('create');
+            Route::post('/store', [\App\Http\Controllers\SliderController::class, 'store'])->name('store');
+
+            Route::get('/{slider}/edit', [\App\Http\Controllers\SliderController::class, 'edit'])->name('edit');
+            Route::put('/{slider}', [\App\Http\Controllers\SliderController::class, 'update'])->name('update');
+
+            Route::patch('/{slider}/toggle', [\App\Http\Controllers\SliderController::class, 'toggle'])->name('toggle');
+            Route::delete('/{slider}', [\App\Http\Controllers\SliderController::class, 'destroy'])->name('destroy');
         });
     });
 });
